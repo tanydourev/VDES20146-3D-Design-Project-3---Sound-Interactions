@@ -1,0 +1,79 @@
+int button1=2;
+int button2=3;
+int button3=4;
+int button4=5;
+int melodyNumber=0;
+boolean button1LastState,button2LastState,button3LastState,button4LastState;
+#include "pitches.h"
+
+// -----
+// HAPPY MELODY
+int happyMelody[] = {
+  NOTE_E4, NOTE_G4, NOTE_B4, NOTE_E4, NOTE_G4, NOTE_B4
+};
+
+int happyNoteDurations[] = {
+  8, 8, 4, 8, 8, 6
+};
+
+// -----
+// SAD MELODY
+int sadMelody[] = {
+  NOTE_D3, NOTE_C3, NOTE_A2, NOTE_F2
+};
+
+int sadNoteDurations[] = {
+  4, 4, 4, 2
+};
+
+
+void setup() {
+  // put your setup code here, to run once:
+pinMode(button1, INPUT);
+pinMode(button2, INPUT);
+pinMode(button3, INPUT);
+pinMode(button4, INPUT);
+
+pinMode(8, OUTPUT);
+
+Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+int button1State= digitalRead (button1);
+int button2State= digitalRead (button2);
+int button3State= digitalRead (button3);
+int button4State= digitalRead (button4);
+
+if (button1State==HIGH && button1LastState != true){
+  button1LastState= true;
+  Serial.println("button state one");
+    for (int thisNote = 0; thisNote < 6; thisNote++) { //change number to the correct value when uncommenting
+      int noteDuration = 1000 / happyNoteDurations[thisNote];
+      tone(8, happyMelody[thisNote], noteDuration);
+      int pauseBetweenNotes = noteDuration * 1.30;
+      delay(pauseBetweenNotes);
+      // stop the tone playing:
+      noTone(8);
+    }
+  delay(300);
+    button1LastState= false;
+}
+
+else if (button2State==HIGH && button2LastState != true){
+  button2LastState= true;
+  Serial.println("button state two");
+    for (int thisNote = 0; thisNote < 4; thisNote++) { //change number to the correct value when uncommenting
+      int noteDuration = 1000 / sadNoteDurations[thisNote];
+      tone(8, sadMelody[thisNote], noteDuration);
+      int pauseBetweenNotes = noteDuration * 1.30;
+      delay(pauseBetweenNotes);
+      // stop the tone playing:
+      noTone(8);
+    }
+  delay(300);
+  button2LastState= false;
+}
+
+}
