@@ -1,0 +1,212 @@
+// ---------------------------------------------------------------------------
+
+// VDES20146 3D Design 1: Spatial Thinking & Materials
+// Project 3: Sound Interactions
+// Tany Dourev & Sydney Cowling
+
+// ---------------------------------------------------------------------------
+
+// Define pin inputs
+int button1=2;
+int button2=3;
+int button3=4;
+int button4=5;
+int buttonColour=7;
+
+// Define pins for RBG LED
+#define BLUE 11
+#define GREEN 10
+#define RED 9
+
+// Misc variables
+int mode = 0;
+int buttonState = 0;
+
+int melodyNumber=0;
+boolean button1LastState,button2LastState,button3LastState,button4LastState;
+#include "pitches.h"
+
+// ---------------------------------------------------------------------------
+
+// RED MELODY
+int redMelody[] = {
+  NOTE_CS5, NOTE_B4, NOTE_FS4, NOTE_D4, NOTE_CS5, NOTE_B4, NOTE_FS4, NOTE_D4
+};
+
+int redNoteDurations[] = {
+  3, 8, 4, 3, 3, 6, 3, 3
+};
+
+// ---------------------------------------------------------------------------
+// YELLOW MELODY
+int yellowMelody[] = {
+  NOTE_E4, NOTE_G4, NOTE_B4, NOTE_E4, NOTE_G4, NOTE_B4
+};
+
+int yellowNoteDurations[] = {
+  8, 8, 4, 8, 8, 6
+};
+
+// ---------------------------------------------------------------------------
+// BLUE MELODY
+int blueMelody[] = {
+  NOTE_D3, NOTE_C3, NOTE_A2, NOTE_F2
+};
+
+int blueNoteDurations[] = {
+  4, 4, 4, 2
+};
+
+// ---------------------------------------------------------------------------
+// PINK MELODY
+int pinkMelody[] = {
+  NOTE_E4, NOTE_G4, 0, NOTE_A4, NOTE_B4, 0, NOTE_E4, NOTE_G4, NOTE_B4
+};
+
+int pinkNoteDurations[] = {
+  10, 10, 10, 10, 10, 10, 10, 10, 10
+};
+
+
+// ---------------------------------------------------------------------------
+void setup() {
+
+  // Sound buttons
+  pinMode(button1, INPUT);
+  pinMode(button2, INPUT);
+  pinMode(button3, INPUT);
+  pinMode(button4, INPUT);
+
+  // RBG LED button
+  pinMode (RED, OUTPUT);
+  pinMode (GREEN, OUTPUT);
+  pinMode (BLUE, OUTPUT);
+  pinMode (buttonColour, INPUT_PULLUP);
+
+  // Speaker
+  pinMode(8, OUTPUT);
+
+  // Serial monitor
+  Serial.begin(9600);
+}
+
+
+// ---------------------------------------------------------------------------
+void loop() {
+  
+  int button1State= digitalRead (button1);
+  int button2State= digitalRead (button2);
+  int button3State= digitalRead (button3);
+  int button4State= digitalRead (button4);
+
+
+  // RED MELODY
+  if (button1State==HIGH && button1LastState != true){
+    button1LastState= true;
+    Serial.println("button state one");
+      for (int thisNote = 0; thisNote < 8; thisNote++) {
+        int noteDuration = 1000 / redNoteDurations[thisNote];
+        tone(8, redMelody[thisNote], noteDuration);
+        int pauseBetweenNotes = noteDuration * 1.30;
+        delay(pauseBetweenNotes);
+        // stop the tone playing:
+        noTone(8);
+      }
+    delay(300);
+    button1LastState= false;
+  }
+
+  // YELLOW MELODY
+  else if (button2State==HIGH && button2LastState != true){
+    button2LastState= true;
+    Serial.println("button state two");
+      for (int thisNote = 0; thisNote < 6; thisNote++) {
+        int noteDuration = 1000 / yellowNoteDurations[thisNote];
+        tone(8, yellowMelody[thisNote], noteDuration);
+        int pauseBetweenNotes = noteDuration * 1.30;
+        delay(pauseBetweenNotes);
+        // stop the tone playing:
+        noTone(8);
+      }
+    delay(300);
+    button2LastState= false;
+  }
+
+  // BLUE MELODY
+  else if (button3State==HIGH && button3LastState != true){
+    button3LastState= true;
+    Serial.println("button state three");
+      for (int thisNote = 0; thisNote < 4; thisNote++) {
+        int noteDuration = 1000 / blueNoteDurations[thisNote];
+        tone(8, blueMelody[thisNote], noteDuration);
+        int pauseBetweenNotes = noteDuration * 1.30;
+        delay(pauseBetweenNotes);
+        // stop the tone playing:
+        noTone(8);
+      }
+    delay(300);
+    button3LastState= false;
+  }
+
+  // PINK MELODY
+  else if (button4State==HIGH && button4LastState != true){
+    button4LastState= true;
+    Serial.println("button state four");
+      for (int thisNote = 0; thisNote < 9; thisNote++) {
+        int noteDuration = 1000 / pinkNoteDurations[thisNote];
+        tone(8, pinkMelody[thisNote], noteDuration);
+        int pauseBetweenNotes = noteDuration * 1.30;
+        delay(pauseBetweenNotes);
+        // stop the tone playing:
+        noTone(8);
+      }
+    delay(300);
+    button4LastState= false;
+  }
+
+  // RGB LED COLOURS
+  if (digitalRead(buttonColour) == LOW) {
+    mode = mode + 1;
+    delay(400);
+  }
+
+  // Off
+  if (mode == 0) {
+    analogWrite(BLUE, 0);
+    analogWrite(GREEN, 0);
+    analogWrite(RED, 0);
+  }
+
+  // Red
+  if (mode == 1) {
+    analogWrite(BLUE, 0);
+    analogWrite(GREEN, 0);
+    analogWrite(RED, 255);    
+  }
+
+  // Yellow
+  if (mode == 2) {
+    analogWrite(BLUE, 0);
+    analogWrite(GREEN, 255);
+    analogWrite(RED, 255);
+  }
+
+  // Blue
+  if (mode == 3) {
+    analogWrite(BLUE, 255);
+    analogWrite(GREEN, 0);
+    analogWrite(RED, 0);
+  }
+
+  // Pink
+  if (mode == 4) {
+    analogWrite(BLUE, 147);
+    analogWrite(GREEN, 20);
+    analogWrite(RED, 255);
+  }
+
+  // Switch off
+  if (mode == 5) {
+    mode = 0;
+  }
+}
